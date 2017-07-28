@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<link rel="stylesheet" href="css/materialize.css" />
+	<script src="jquery-3.1.1.js"></script>
+	<script src="artyom.min.js"></script>
+	<script src="artyomCommands.js"></script>
+	<style>
+		.contenedor{
+			width: 60%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	</style>
+     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+	<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function(){
+$('.preloader-background').delay(1700).fadeOut('slow');
+
+$('.preloader-wrapper')
+	.delay(1700)
+	.fadeOut();
+});
+	</script>
+	<script src="js/materialize.js"></script>
+  <div class="navbar-fixed">
+    <nav class="blue z-depth-3">
+    <div class="nav-wrapper container">
+      <a href="#!" class="brand-logo"><i class="material-icons left">face</i> Skynet</a>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="intro2.html">¿Como usarlo?</a></li>
+        <li><a href="../aprender2.html">Aprendiendo el LSB</a></li>
+        <li><a >Fundaciones</a></li>
+        <li><a class="btn waves-effect waves-light" href="../index.html">Lectror de Señas</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a href="sass.html">Sass</a></li>
+        <li><a href="badges.html">Components</a></li>
+        <li><a href="collapsible.html">Javascript</a></li>
+        <li><a href="audio.html">Mobile</a></li>
+      </ul>
+    </div>
+  </nav>
+  </div>
+   <h1 class="center-align flow-text">Traductor de Audio a LSB mediante Imagenes</h1> 
+	<div class="contenedor">
+				 <img src= "lengua.png" center=alight class="responsive-img " height="800" width="650" >
+		<form class="for" action="index.html" method="post" style="display:none">
+			<input type="text" id="salida">
+		</form>
+		<h2 id="salida"></h2>
+		<div id="modal1" class="modal">
+
+		<h4 id="titleModal" align="center"></h4>
+		<div class="modal-content"  border-radius="10px">
+			<div id="ImagenesModal">
+				<div class="preloader-wrapper big active">
+				    <div class="spinner-layer spinner-blue-only">
+				      <div class="circle-clipper left">
+				        <div class="circle"></div>
+				      </div><div class="gap-patch">
+				        <div class="circle"></div>
+				      </div><div class="circle-clipper right">
+				        <div class="circle"></div>
+				      </div>
+				    </div>
+				  </div>
+			</div>
+			</div>
+		</div>
+		<div class="" align="center">
+			<p>Iniciar Reconocimiento de voz</p>
+			<a class="btn-floating btn-large waves-effect waves-light green"><i onclick="startArtyom()" class="material-icons">keyboard_voice</i></a>                      					
+			 <a class="btn-floating btn-large waves-effect waves-light red"><i onclick="stopArtyom();" class="material-icons">pause</i></a>
+		</div>
+		
+	</div>
+	<script>
+	//Modales
+	$(document).ready(function(){
+
+		$('.modal').modal();
+			});
+		//El sistema responde
+		var cadenas2 = document.getElementById("salida").value.toLowerCase();
+		artyom.addCommands([
+			{
+				indexes:[cadenas2],
+				action: function(i){
+					if (i==0) {
+						var cadenas2 = document.getElementById("salida").value;
+						var elem = cadenas2.split(' ');
+						var temp;
+						for (var i = 0; i < elem.length; i++) {
+							if (i==0) {
+								temp="img/"+elem[i]+".png,";
+							}
+							else {
+								temp+="img/"+elem[i]+".png,";
+							}
+						}
+						var alon = temp.split(',');
+						var conta=0;
+						var d = document.getElementById("ImagenesModal");
+						 $('#modal1').modal('open');
+						var imagen1 = new Image(600, 400);
+						var gal=function() {
+							 document.getElementById("titleModal").innerHTML = elem[conta];
+							 imagen1.src = alon[conta];
+							 document.body.appendChild(imagen1);
+							 d.appendChild(imagen1);
+							 conta++;
+							 console.log(conta);
+							 if (conta===alon.length-1) {
+								 clearInterval(intervalo2)
+							 }
+						 };
+						 var intervalo2 = setInterval(gal,3000);
+						}
+				}
+			},
+			{
+				indexes:['me voy','chau'],
+				action: function(){
+					alert('ok, chau');
+				}
+			},
+			{
+				indexes:['limpiar'],
+				action: function(){
+					$('#salida').val('');
+				}
+			}
+		]);
+		artyom.redirectRecognizedTextOutput(function(text,isFinal){
+			var texto = $('#salida');
+			if (isFinal) {
+				texto.val(text);
+			}else{
+			}
+		});
+		function startArtyom(){
+			artyom.initialize({
+				lang: "es-ES",
+				continuous:true,// Reconoce 1 solo comando y para de escuchar
+							listen:true, // Iniciar !
+							debug:true, // Muestra un informe en la consola
+							speed:1 // Habla normalmente
+			});
+		};
+		function stopArtyom(){
+			artyom.fatality();// Detener cualquier instancia previa
+		};
+	</script>
+</body>
+</html>

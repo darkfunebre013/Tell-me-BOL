@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+	input{
+		width: 400px;
+	}
+</style>
+<meta charset="utf-8">
+	<title>Reconocimiento de voz a audio</title>
+
+		<script>
+			function eylem() {
+
+				var ses=new webkitSpeechRecognition ();
+				ses.lang="tr";
+				ses.onresult=function(e){
+					if (event.results.lenght>0) {
+
+						sonuc=event.results[event.results,lenght-1];
+						if (sonuc.isFinal) {
+							document.querySelector("input").value=sonuc[0].transcript;
+						}
+					}
+					
+				}
+				ses.start();
+			}
+		</script>
+
+</head>
+<body>
+	<button onclick="eylem()">sesli ara</button>
+	<input type="text">
+
+</body>
+</html>
